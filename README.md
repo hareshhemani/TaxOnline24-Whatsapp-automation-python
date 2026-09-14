@@ -58,7 +58,7 @@ ame, mobile) before launching campaigns.
 
 ## 📁 Repository Structure
 
-``text
+``
 ├── bg.png                 # Background UI asset
 ├── contacts.xlsx          # Sample contact sheet template
 ├── whatsapp_ui.py         # Main application GUI & Automation engine
