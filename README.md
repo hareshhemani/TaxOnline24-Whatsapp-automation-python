@@ -67,7 +67,7 @@ ame, mobile) before launching campaigns.
 ├── LICENSE.md             # MIT License with Copyright & contact info
 ├── README.md              # Project documentation & guides
 └── CONTRIBUTING.md        # Guidelines for contributions
-``
+```
 
 ---
 
