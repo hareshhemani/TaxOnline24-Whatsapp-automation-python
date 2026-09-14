@@ -25,4 +25,4 @@ SOFTWARE.
 ---
 
 ### Legal & Fair Use Disclaimer
-This software is developed for legitimate client communication, compliance alerts, and automation purposes. The developer (**Haresh Kumar Hemani** / **TaxOnline24.in**) is not affiliated with, endorsed by, or in any way officially connected with WhatsApp LLC, Meta Platforms, Inc., or any of their subsidiaries or affiliates. Use this tool responsibly in full compliance with WhatsApp's Terms of Service.
+This software is developed for legitimate client communication, compliance alerts, and automation purposes. The developer (**Haresh Kumar Hemani** / **TaxOnline24**) is not affiliated with, endorsed by, or in any way officially connected with WhatsApp LLC, Meta Platforms, Inc., or any of their subsidiaries or affiliates. Use this tool responsibly in full compliance with WhatsApp's Terms of Service.
