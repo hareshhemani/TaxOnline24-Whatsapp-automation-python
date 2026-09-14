@@ -58,7 +58,7 @@ ame, mobile) before launching campaigns.
 
 ## 📁 Repository Structure
 
-``
+`
 ├── bg.png                 # Background UI asset
 ├── contacts.xlsx          # Sample contact sheet template
 ├── whatsapp_ui.py         # Main application GUI & Automation engine
@@ -67,9 +67,9 @@ ame, mobile) before launching campaigns.
 ├── LICENSE.md             # MIT License with Copyright & contact info
 ├── README.md              # Project documentation & guides
 └── CONTRIBUTING.md        # Guidelines for contributions
-```
+`
 
----
+
 
 ## ⚙️ Prerequisites & System Requirements
 
