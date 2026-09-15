@@ -70,7 +70,7 @@ def is_search_bar_still_active(number):
     if not clean_num:
         return False
         
-    sentinel = f"__WA_SENTINEL_NO_COPY__"
+    sentinel = f"__WA_SENTINEL_{random.randint(10000, 99999)}__"
     pyperclip.copy(sentinel)
     time.sleep(0.2)
     
@@ -89,8 +89,9 @@ def is_search_bar_still_active(number):
     clean_copied = ''.join(c for c in copied if c.isdigit())
     
     # If copied text matches digits of searched phone number, search bar is definitely still active!
-    if len(clean_copied) >= 7 and (clean_num in clean_copied or clean_copied in clean_num):
-        return True
+    if len(clean_copied) >= 7:
+        if clean_num in clean_copied or clean_copied in clean_num or clean_num[-7:] in clean_copied:
+            return True
         
     return False
 
@@ -392,13 +393,13 @@ class PremiumWhatsAppUIv2(ctk.CTk):
 
                 # --- STEP 1: Clear Search / Popups ---
                 pyautogui.press('esc') 
-                time.sleep(0.4)
+                time.sleep(0.3)
                 pyautogui.press('esc')
-                time.sleep(0.4)
+                time.sleep(0.3)
 
                 # --- STEP 2: Open Search Bar in WhatsApp Web ---
                 pyautogui.hotkey('ctrl', 'alt', '/')
-                time.sleep(1.0)
+                time.sleep(0.8)
                 
                 # --- STEP 3: Clear Search Box & Type Recipient Number ---
                 pyautogui.hotkey('ctrl', 'a')
@@ -407,23 +408,21 @@ class PremiumWhatsAppUIv2(ctk.CTk):
                 pyautogui.typewrite(number)
                 
                 # --- STEP 4: Wait for Search Query to Resolve ---
-                time.sleep(random.uniform(4.0, 5.5))
+                time.sleep(random.uniform(3.5, 4.5))
                 
                 # Try opening chat (Enter)
                 pyautogui.press('enter')
                 time.sleep(1.5)
 
-                # Check if chat actually opened or if focus is still in search bar
+                # If still in search bar, retry Enter once (NEVER press Down Arrow - it selects the wrong first chat!)
                 if is_search_bar_still_active(number):
-                    # Try down arrow + enter (for unsaved WhatsApp contacts in modern web UI)
-                    pyautogui.press('down')
-                    time.sleep(0.5)
                     pyautogui.press('enter')
-                    time.sleep(2.0)
+                    time.sleep(1.5)
 
                 # --- STEP 5: Verification (Did the chat open?) ---
                 if is_search_bar_still_active(number):
                     # Number is NOT registered on WhatsApp or contact was not found!
+                    # Safely skip to prevent sending to the wrong / first chat in the list.
                     self.add_log(f"⚠️ NOT FOUND / NOT ON WHATSAPP: {name} ({number}) - Skipping")
                     df.at[index, 'Status'] = 'Failed (Not on WhatsApp / Not Found)'
                     df.at[index, 'Attachment_Sent'] = 'None'
@@ -446,7 +445,7 @@ class PremiumWhatsAppUIv2(ctk.CTk):
 
                     # Safety Cooldown before moving to next contact
                     if index < self.total_count - 1 and self.is_running:
-                        time.sleep(random.uniform(3, 5))
+                        time.sleep(random.uniform(2, 4))
                     continue
 
                 # --- STEP 6: Chat Opened Successfully! Send Content ---
@@ -471,9 +470,28 @@ class PremiumWhatsAppUIv2(ctk.CTk):
                         pyautogui.hotkey('ctrl', 'v')
                         time.sleep(1.0)
 
-                    # Send attachment + caption
-                    pyautogui.press('enter')
-                    time.sleep(3.0)  # Wait buffer for file upload initiation
+                    # Send attachment + caption:
+                    # Dual method: Try locating visual Send button on screen first, fallback to Enter
+                    sent_via_click = False
+                    script_dir = os.path.dirname(os.path.abspath(__file__))
+                    send_btn_icon = os.path.join(script_dir, "send_button.png")
+                    if not os.path.exists(send_btn_icon):
+                        send_btn_icon = resource_path("send_button.png")
+
+                    if os.path.exists(send_btn_icon):
+                        try:
+                            btn_pos = pyautogui.locateCenterOnScreen(send_btn_icon, confidence=0.8)
+                            if btn_pos:
+                                pyautogui.click(btn_pos)
+                                sent_via_click = True
+                                time.sleep(1.0)
+                        except Exception:
+                            pass
+
+                    if not sent_via_click:
+                        pyautogui.press('enter')
+
+                    time.sleep(3.5)  # Wait buffer for file upload initiation
                     df.at[index, 'Status'] = 'Sent with Attachment'
                     df.at[index, 'Attachment_Sent'] = att_name
 
